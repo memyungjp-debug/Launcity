@@ -1,0 +1,8 @@
+.social-community-stats{display:flex;flex-wrap:wrap;gap:8px 18px;padding:0 0 16px;color:var(--muted);font-size:10px}
+.social-community-top{flex-wrap:wrap}
+.social-feed-tabs{overflow-x:auto}
+.social-feed-tabs>button{flex-shrink:0}
+.pending-launch>.action-button{margin:12px 10px 0 0}
+.social-post-text{overflow-wrap:anywhere}
+.nexus-form input[type=file].sr-only{width:1px;height:1px;min-height:1px;padding:0;border:0}
+@media(max-width:420px){.social-feed-tabs>button{padding-left:10px;padding-right:10px}.social-community-top{gap:12px}}

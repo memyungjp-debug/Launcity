@@ -1,0 +1,9 @@
+import React from 'react';
+import {Link} from 'react-router-dom';
+import {Layers3,ArrowUpRight,Github,Twitter,Send,MessageCircle} from 'lucide-react';
+
+export const SocialLinks=({prefix='footer'})=>{
+ const links=[['X',Twitter,process.env.REACT_APP_SOCIAL_X_URL],['Telegram',Send,process.env.REACT_APP_SOCIAL_TELEGRAM_URL],['Discord',MessageCircle,process.env.REACT_APP_SOCIAL_DISCORD_URL],['GitHub',Github,process.env.REACT_APP_GITHUB_URL]];
+ return <div className="social-destinations">{links.map(([name,Icon,url])=>url?<a key={name} href={url} target="_blank" rel="noreferrer" data-testid={`${prefix}-social-${name.toLowerCase()}`}><Icon size={15}/>{name}<ArrowUpRight size={12}/></a>:<button key={name} disabled title="Official link coming soon" data-testid={`${prefix}-social-${name.toLowerCase()}`}><Icon size={15}/>{name}<small>Soon</small></button>)}</div>;
+};
+export const SiteFooter=()=> <footer className="site-footer" data-testid="site-footer"><div className="footer-top"><div><Link to="/" className="nexus-brand" data-testid="footer-home"><Layers3 size={25}/><span>NEXUS<span className="brand-period">.</span></span></Link><p data-testid="footer-positioning">Token world. Real connections.</p></div><div className="footer-links"><Link to="/world" data-testid="footer-world">World</Link><Link to="/launch" data-testid="footer-launch">Launch a token</Link><Link to="/community" data-testid="footer-community">Community</Link><Link to="/about" data-testid="footer-about">About</Link><Link to="/docs" data-testid="footer-docs">Docs</Link></div></div><div className="footer-bottom"><span data-testid="footer-copyright">© {new Date().getFullYear()} NEXUS · Built on Solana</span><SocialLinks/></div></footer>;

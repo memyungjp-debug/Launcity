@@ -1,0 +1,13 @@
+{
+  "authority": "Latest user direction: dedicated homepage first, balanced premium UX, persistent five-section navigation, map-only World. Supersedes earlier root-to-world behavior.",
+  "product": "NEXUS — Token world. Simple product.",
+  "layout": "Root is a dedicated premium homepage with authentic static product previews, Enter World and Launch CTAs, About, community, docs and socials. Persistent Home | World | Launch | Community | About navigation on desktop; fixed icon-and-label bottom navigation on mobile. /world is only the original full-bleed map, token buildings, search and direct map controls; no intro copy, label banners or neighborhood selector.",
+  "community": "One Community destination with directory and combined-feed tabs, using actual live communities and wallet-authenticated posts",
+  "socials": "Official X/Telegram/Discord URLs are pending from user; buttons explicitly disabled and labeled Soon. Never invent social destinations. GitHub uses the supplied repository URL.",
+  "actions": ["Explore the World", "Click a Token Building", "View the Token", "Join its Community", "Launch a Token"],
+  "prohibited": ["radial menus", "weapon wheels", "circular navigation", "game HUD systems", "showcase mode", "unnecessary navigation layers"],
+  "typography": {"headings": "Chivo", "body": "Chivo", "numbers": "IBM Plex Mono", "letter_spacing": 0},
+  "colors": {"background": "#101413", "accent": "#c2f675", "text": "#f2f5ef", "muted": "#8f9b94"},
+  "preserve": ["Original Three.js geometry", "Real market data", "Wallet authentication", "Pump.fun launch and fees", "Token communities"],
+  "data": "Five existing token identities move into Live World with honest independent-launch origin, no fake launch confirmation or prices"
+}

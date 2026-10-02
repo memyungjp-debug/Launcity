@@ -1,0 +1,11 @@
+import React,{useState} from 'react';
+import {Link} from 'react-router-dom';
+import {Search,Users,ArrowUpRight,Plus,MessageCircle} from 'lucide-react';
+import {TokenAvatar,Empty} from '../Shared';
+import {districtNames} from '../../lib/api';
+
+export const CommunityDirectory=({communities})=>{
+ const [query,setQuery]=useState('');
+ const matches=communities.filter(c=>`${c.name} ${c.symbol}`.toLowerCase().includes(query.toLowerCase()));
+ return <section data-testid="community-directory"><div className="directory-toolbar"><span data-testid="directory-count">{matches.length} {matches.length===1?'community':'communities'}</span><label className="directory-search"><Search size={15}/><input data-testid="community-directory-search" aria-label="Find a community" placeholder="Find a community" value={query} onChange={e=>setQuery(e.target.value)}/></label></div>{matches.length?<div className="community-directory-grid">{matches.map(c=><Link key={c.id} to={`/community/${c.id}`} className="directory-card" data-testid={`directory-community-${c.id}`} style={{'--community-color':c.color}}><div className="directory-card-top"><TokenAvatar token={c} size={49}/><ArrowUpRight size={20}/></div><span className="directory-district" data-testid={`directory-district-${c.id}`}><i/>{districtNames[c.district]}</span><h2 data-testid={`directory-name-${c.id}`}>{c.name}</h2><span className="directory-symbol" data-testid={`directory-symbol-${c.id}`}>${c.symbol}</span><div className="directory-card-bottom"><span data-testid={`directory-members-${c.id}`}><Users size={13}/>{c.members} contributors</span><span data-testid={`directory-posts-${c.id}`}><MessageCircle size={13}/>{c.posts} posts</span></div></Link>)}{!query&&<Link to="/launch" className="directory-create" data-testid="directory-launch"><span className="create-community-mark"><Plus size={28}/></span><h2 data-testid="directory-launch-title">Make room for your idea.</h2><p data-testid="directory-launch-description">Launch a token. Start a community.</p><span>Launch a token<ArrowUpRight size={15}/></span></Link>}</div>:<Empty icon={Search} title="No community found." text="Try another name or ticker." testId="directory-empty"/>}</section>;
+};
