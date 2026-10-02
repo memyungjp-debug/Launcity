@@ -1,5 +1,36 @@
 # NEXUS — Living Solana World
 
+## Latest feature addition — 2026-10-02, community invites and dense World
+
+### Original request
+“Tambahkan
+Undangan Komunitas: Tambahkan tautan undangan yang langsung membuka komunitas token saat dibagikan kepada teman
+Dan worldnya itu tolong lah buat full buidling jangan ada space kosong begitu jadi jelek keliatannya”
+
+### Explicit choices
+- “Perbanyak bangunan kota pendukung (Recommended): Isi area kosong dan rapatkan kota, tetapi bangunan token tetap mudah dikenali dan tidak menambahkan token palsu”.
+- “Tombol Bagikan + Salin Tautan (Recommended): Langsung membuka komunitas token, dengan pilihan berbagi bawaan ponsel jika tersedia”.
+
+### Implemented and architecture
+- Added reusable CommunityInvite to real token community page headings, including thread pages. Share uses native Web Share API when available; unsupported/error cases open a small Shadcn invitation dialog. Copy link always available, with copied state/toast only after Clipboard API success. Clipboard refusal exposes selectable URL and honest manual-copy message. Native share cancellation is silent.
+- Invite URL uses the current site origin and canonical `/community/{encoded-token-id}` route. No login, referral database, expiry or intermediate page. Thread sharing invites to its token community, not a post. No private session/query data is shared.
+- Dense city scenery moved to `world/scenery.js`: deterministic 7406 non-token buildings for the current five-token world, multi-part facades/roofs/rooftop utilities, much larger filled world, preserved core streets/canal/plaza and clear token lots. Seven instanced scenery/street meshes keep draw calls low. Neutral supporting buildings have no tokenId or clickable fake tokens.
+- Real token towers, coordinates, market-driven heights and five identities remain unchanged. Camera panning constrained to the filled city; zoom/pan/top/reset preserved. No HUD, labels or categories added.
+- Community sharing styles in `invitations.css`; mobile header actions wrap without changing five-destination navigation or homepage-first routing.
+- Initial desktop screenshot passed:7406 supporting buildings/5 token buildings, colored token labels visible; FARTCOIN building → token → community works; invite dialog shows exact same-origin canonical link.
+- Homepage/About world imagery and World product screenshot regenerated from the actual denser city. Capture script now buffers output until browser work ends to prevent hot-reload navigation races.
+- Testing iteration3:11/11 targeted backend regression checks passed; dense7406/5 counts, actual tower/label navigation, clipboard success/reset, clipboard refusal fallback, desktop390/320 sharing layout and no horizontal overflow passed. No confirmed product defects.
+- Main-agent follow-up resolved both testing-environment blockers WITHOUT adding runtime test hooks: success/AbortError/rejection native-share branches passed via test-only `add_init_script` navigator override before page load. Correct payload checked; cancellation silent, rejection opens copy fallback. Evidence console: `/root/.emergent/automation_output/20261002_231321/console_20261002_231321.log`.
+- Created one temporary signed-wallet post using existing auth test fixtures, opened its actual thread and verified Clipboard API copies only `/community/fartcoin`, stripping thread path, query and fragment. Fresh logged-out browser opened and reloaded the copied URL into correct community. Test post, feed/activity and session/profile/challenge data cleaned afterwards. Evidence console: `/root/.emergent/automation_output/20261002_231357/console_20261002_231357.log`.
+- Physical mobile OS share sheet was not exercised in headless automation; native API branches were tested with browser-only stubs. No mocked APIs or test stubs shipped in the app.
+
+### Remaining / priorities
+- P0: no confirmed defects remaining in this scope; invitations and dense-world regression complete.
+- P1: official social URLs remain pending from user; financial flows unchanged, no paid transactions executed.
+- P2: favorite communities, pinned creator announcements, community invite QR code if requested. Direct shareable community invitations are now implemented; remove them from historical backlog interpretation.
+
+---
+
 ## LATEST AUTHORITATIVE SCOPE — 2026-10-02, homepage and primary navigation
 
 This section supersedes the prior root-to-world requirement and all conflicting historical sections below.
@@ -82,7 +113,7 @@ The World is the experience. The navigation should stay simple.
 ### Current limitations and prioritized backlog
 - P0: none outstanding in the tested latest scope.
 - P1: user will supply official X/Telegram/Discord links. Paid mainnet launch/trade/payout verification still requires explicit user-controlled wallet execution and is not claimed complete.
-- P2: bookmark favorite communities, shareable community invites, pinned creator announcements. Do not add extra primary navigation categories.
+- P2: bookmark favorite communities and pinned creator announcements. Shareable community invites were implemented in the latest addition above. Do not add extra primary navigation categories.
 
 ---
 

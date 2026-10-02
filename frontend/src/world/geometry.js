@@ -1,4 +1,6 @@
 import * as THREE from 'three';
+import {CITY_RADIUS,makeStreetNetwork} from './scenery';
+export {makeScenery} from './scenery';
 export const districtData=[
  {id:'meme',name:'MEME QUARTER',color:'#b6f36e',x:-38,z:-25,points:[[-75,-61],[-7,-61],[-7,-4],[-25,2],[-75,-4]]},
  {id:'defi',name:'DEFI HEIGHTS',color:'#f1bd6c',x:34,z:-28,points:[[3,-61],[70,-61],[82,-42],[77,-6],[3,-6]]},
@@ -11,20 +13,14 @@ export function line(parent,points,color,opacity=1){const g=new THREE.BufferGeom
 export function floorShape(parent,points,color,opacity=1,y=.05){const s=new THREE.Shape();points.forEach(([x,z],i)=>i?s.lineTo(x,-z):s.moveTo(x,-z));s.closePath();const m=new THREE.Mesh(new THREE.ShapeGeometry(s),new THREE.MeshBasicMaterial({color,transparent:true,opacity,side:THREE.DoubleSide}));m.rotation.x=-Math.PI/2;m.position.y=y;parent.add(m);return m;}
 function textPlane(parent,text,x,z,color,size=7,width=40){const c=document.createElement('canvas');c.width=1024;c.height=128;const ctx=c.getContext('2d');ctx.font='500 46px monospace';ctx.fillStyle=color;ctx.textAlign='center';ctx.fillText(text,512,82);const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;const p=new THREE.Mesh(new THREE.PlaneGeometry(width,size),new THREE.MeshBasicMaterial({map:t,transparent:true,opacity:.66,depthWrite:false}));p.rotation.x=-Math.PI/2;p.position.set(x,.12,z);parent.add(p);}
 export function makeTerrain(scene){
- const ground=box(scene,0,-1,0,600,.7,600,mat('#0b1114'));
- const grid=new THREE.GridHelper(520,104,'#1a242b','#151d22');grid.position.y=-.24;scene.add(grid);
+ const ground=box(scene,0,-1,0,CITY_RADIUS*2+120,.7,CITY_RADIUS*2+120,mat('#15201b'));
  const territories=new THREE.Group();scene.add(territories);
  districtData.forEach(d=>{
   floorShape(territories,d.points,d.color,.044,.03);
   line(territories,[...d.points,d.points[0]].map(([x,z])=>[x,.09,z]),d.color,.45);
   textPlane(scene,d.name,d.x,d.z+(d.z<0?-27:27),d.color,4.2,36);
  });
- const asphalt=mat('#141c21'),curb=mat('#273037');
- // A connected street network crosses district borders and extends beyond the city center.
- for(let i=-108;i<=108;i+=18){
-  box(scene,i,-.09,0,2.8,.08,260,asphalt);box(scene,0,-.09,i,260,.08,2.8,asphalt);
-  for(let j=-130;j<130;j+=6){box(scene,i,.01,j,.09,.025,1.5,curb);box(scene,j,.01,i,1.5,.025,.09,curb);}
- }
+ const asphalt=mat('#141c21');makeStreetNetwork(scene);
  const lane=mat('#50635e',{emissive:'#94bfad',emissiveIntensity:.25});
  box(scene,0,-.05,0,5,.07,320,asphalt);box(scene,0,-.05,0,320,.07,5,asphalt);
  [-2.1,2.1].forEach(x=>{box(scene,x,.005,0,.035,.03,320,lane);box(scene,0,.005,x,320,.03,.035,lane);});
@@ -37,28 +33,6 @@ export function makeTerrain(scene){
  const crystal=new THREE.Mesh(new THREE.OctahedronGeometry(2.1),mat('#c3f795',{emissive:'#8bd55d',emissiveIntensity:.8,metalness:.65}));crystal.position.y=5;scene.add(crystal);
  textPlane(scene,'GENESIS PLAZA',0,11,'#aabbb4',3,21);
  return {territories,crystal,ground};
-}
-export function makeScenery(scene,tokens){
- const positions=[];let seed=72;const random=()=>{seed=(seed*16807)%2147483647;return(seed-1)/2147483646;};
- for(let x=-120;x<124;x+=6)for(let z=-105;z<110;z+=6){
-  if(Math.abs(x%18)<3 || Math.abs(z%18)<3 || Math.abs(x+86)<7 || Math.hypot(x,z)<13)continue;
-  if(tokens.some(t=>Math.hypot(t.x-x,t.z-z)<7.5))continue;
-  if(random()<.23)continue;
-  const central=Math.abs(x)<76&&Math.abs(z)<69;
-  positions.push({x:x+random()*1.5,z:z+random()*1.5,h:(1+random()*7)*(central?1:.5),w:2+random()*1.6,d:2+random()*2,r:random()});
- }
- const geometry=new THREE.BoxGeometry(1,1,1),material=mat('#334048');
- const blocks=new THREE.InstancedMesh(geometry,material,positions.length),roofs=new THREE.InstancedMesh(geometry,mat('#50615f'),positions.length);
- const windows=new THREE.InstancedMesh(geometry,new THREE.MeshBasicMaterial({color:'#899b86',transparent:true,opacity:.3}),positions.length*3);
- const dummy=new THREE.Object3D();
- positions.forEach((p,i)=>{
-  dummy.position.set(p.x,p.h/2,p.z);dummy.scale.set(p.w,p.h,p.d);dummy.updateMatrix();blocks.setMatrixAt(i,dummy.matrix);
-  blocks.setColorAt(i,new THREE.Color(p.r>.6?'#35434a':p.r>.3?'#28383a':'#3b454b'));
-  dummy.position.y=p.h+.1;dummy.scale.set(p.w*.8,.18,p.d*.8);dummy.updateMatrix();roofs.setMatrixAt(i,dummy.matrix);
-  for(let j=0;j<3;j++){dummy.position.set(p.x,p.h*(.25+j*.25),p.z+p.d/2+.01);dummy.scale.set(p.w*.68,.08,.02);dummy.updateMatrix();windows.setMatrixAt(i*3+j,dummy.matrix);}
- });scene.add(blocks,roofs,windows);
- const treeMat=mat('#385449'),trunkMat=mat('#374039');
- for(let i=0;i<85;i++){const x=random()*152-76,z=random()*132-66;if(tokens.some(t=>Math.hypot(t.x-x,t.z-z)<7)||Math.abs(x)<5||Math.abs(z)<5)continue;const tree=new THREE.Mesh(new THREE.IcosahedronGeometry(.7+random()*.5,0),treeMat);tree.position.set(x,1.5,z);scene.add(tree);box(scene,x,0,z,.18,1.2,.18,trunkMat);}
 }
 function windowTexture(color){const c=document.createElement('canvas');c.width=64;c.height=128;const ctx=c.getContext('2d');ctx.fillStyle='#172a29';ctx.fillRect(0,0,64,128);ctx.fillStyle=color;for(let y=7;y<128;y+=13)for(let x=7;x<64;x+=13){ctx.globalAlpha=(x+y)%3===0?.35:.7;ctx.fillRect(x,y,5,6);}const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;t.wrapS=t.wrapT=THREE.RepeatWrapping;return t;}
 export const tokenHeight=cap=>cap==null?4:Math.min(38,5+Math.log10(Math.max(cap,1000)/100000+1)*7.2);

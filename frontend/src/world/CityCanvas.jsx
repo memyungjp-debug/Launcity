@@ -18,16 +18,17 @@ export const CityCanvas=forwardRef(({tokens,onSelect,district,layers,onCamera},r
  }),[]);
  useEffect(()=>{
   if(!mount.current)return;
-  const host=mount.current;const scene=new THREE.Scene();scene.background=new THREE.Color('#0b1013');scene.fog=new THREE.FogExp2('#0b1013',.0022);
+  const host=mount.current;const scene=new THREE.Scene();scene.background=new THREE.Color('#0b1013');scene.fog=new THREE.FogExp2('#0b1013',.00115);
   let renderer;
   try{renderer=new THREE.WebGLRenderer({antialias:true,alpha:false,powerPreference:'high-performance',preserveDrawingBuffer:true});}catch{setFailed(true);return;}
   renderer.setPixelRatio(Math.min(window.devicePixelRatio,1.5));renderer.setSize(host.clientWidth,host.clientHeight);renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.4;
   renderer.domElement.setAttribute('data-testid','city-canvas');renderer.domElement.setAttribute('aria-label','Interactive 3D token city');host.prepend(renderer.domElement);
   const aspect=host.clientWidth/host.clientHeight,frustum=Math.max(160,145/aspect);
-  const camera=new THREE.OrthographicCamera(-frustum*aspect/2,frustum*aspect/2,frustum/2,-frustum/2,.1,1200);camera.position.set(115,140,145);
+  const camera=new THREE.OrthographicCamera(-frustum*aspect/2,frustum*aspect/2,frustum/2,-frustum/2,.1,2500);camera.position.set(115,140,145);
   const controls=new OrbitControls(camera,renderer.domElement);controls.target.set(0,0,0);controls.enableDamping=true;controls.dampingFactor=.09;controls.minZoom=.5;controls.maxZoom=3.5;controls.maxPolarAngle=Math.PI*.47;controls.minPolarAngle=.05;controls.mouseButtons={LEFT:THREE.MOUSE.PAN,MIDDLE:THREE.MOUSE.DOLLY,RIGHT:THREE.MOUSE.ROTATE};controls.touches={ONE:THREE.TOUCH.PAN,TWO:THREE.TOUCH.DOLLY_ROTATE};
   scene.add(new THREE.AmbientLight('#b8d4d2',2));const sun=new THREE.DirectionalLight('#e7f7e9',3);sun.position.set(-70,120,30);scene.add(sun);const fill=new THREE.DirectionalLight('#6ca8bf',1.8);fill.position.set(80,30,-80);scene.add(fill);
-  const terrain=makeTerrain(scene);makeScenery(scene,tokens);batchScenery(scene,new Set([terrain.crystal]));const towers=tokens.map((t,i)=>makeTower(scene,t,i));
+  const terrain=makeTerrain(scene),scenery=makeScenery(scene,tokens);batchScenery(scene,new Set([terrain.crystal]));const towers=tokens.map((t,i)=>makeTower(scene,t,i));
+  renderer.domElement.setAttribute('data-scenery-buildings',String(scenery.buildingCount));renderer.domElement.setAttribute('data-token-buildings',String(tokens.length));
   const cars=[];for(let i=0;i<26;i++){const m=box(scene,0,.15,0,.35,.16,.8,new THREE.MeshBasicMaterial({color:i%3===0?'#ffb5a5':'#d5eddc'}));cars.push({m,axis:i%2,road:(i%9-4)*18,offset:i*9.3,speed:2.5+(i%4)});}
   const raycaster=new THREE.Raycaster(),pointer=new THREE.Vector2();let down=null;
   const pointerdown=e=>{down=e.button===0?{x:e.clientX,y:e.clientY}:null;};
@@ -36,7 +37,10 @@ export const CityCanvas=forwardRef(({tokens,onSelect,district,layers,onCamera},r
   const resize=new ResizeObserver(()=>{const w=host.clientWidth,h=host.clientHeight;if(!w||!h)return;const size=Math.max(160,145/(w/h));camera.left=-size*w/h/2;camera.right=size*w/h/2;camera.top=size/2;camera.bottom=-size/2;camera.updateProjectionMatrix();renderer.setSize(w,h);});resize.observe(host);
   engine.current={scene,camera,controls,terrain,towers};let frame=0,raf;const clock=new THREE.Timer();clock.connect(document);
   const animate=()=>{
-   raf=requestAnimationFrame(animate);clock.update();const elapsed=clock.getElapsed();controls.update();terrain.crystal.rotation.y=elapsed*.25;terrain.crystal.position.y=5+Math.sin(elapsed)*.25;
+   raf=requestAnimationFrame(animate);clock.update();const elapsed=clock.getElapsed();controls.update();
+   const panX=THREE.MathUtils.clamp(controls.target.x,-120,120)-controls.target.x,panZ=THREE.MathUtils.clamp(controls.target.z,-120,120)-controls.target.z;
+   if(panX||panZ){controls.target.x+=panX;controls.target.z+=panZ;camera.position.x+=panX;camera.position.z+=panZ;}
+   terrain.crystal.rotation.y=elapsed*.25;terrain.crystal.position.y=5+Math.sin(elapsed)*.25;
    cars.forEach(({m,axis,road,offset,speed})=>{const pos=(elapsed*speed+offset)%250-125;m.position.set(axis?road+.75:pos,.3,axis?pos:road+.75);m.rotation.y=axis?0:Math.PI/2;});
    towers.forEach(t=>{t.building.scale.y=THREE.MathUtils.lerp(t.building.scale.y,t.targetHeight/t.height,.025);});
    if(frame++%2===0){

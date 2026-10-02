@@ -8,6 +8,8 @@
   "prohibited": ["radial menus", "weapon wheels", "circular navigation", "game HUD systems", "showcase mode", "unnecessary navigation layers"],
   "typography": {"headings": "Chivo", "body": "Chivo", "numbers": "IBM Plex Mono", "letter_spacing": 0},
   "colors": {"background": "#101413", "accent": "#c2f675", "text": "#f2f5ef", "muted": "#8f9b94"},
-  "preserve": ["Original Three.js geometry", "Real market data", "Wallet authentication", "Pump.fun launch and fees", "Token communities"],
+  "preserve": ["Original token tower geometry and identities", "Real market data", "Wallet authentication", "Pump.fun launch and fees", "Token communities"],
+  "world_density": "Latest request: fill empty space with dense neutral supporting buildings extending to viewport edges, preserve streets, plaza and distinct colored real-token towers. Scenery must never masquerade as tokens, receive token labels or change real token counts. Use GPU instancing and bounded exploration to keep rendering practical.",
+  "community_invites": "Direct community URL sharing, native mobile share when supported, always available Copy link, clear clipboard fallback, no authentication or intermediary invite page for recipients.",
   "data": "Five existing token identities move into Live World with honest independent-launch origin, no fake launch confirmation or prices"
 }

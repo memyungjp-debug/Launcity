@@ -1,0 +1,57 @@
+{
+  "summary": "Completed targeted backend+frontend regression for community invite and dense world updates. Backend read/regression tests passed (11/11). Core invite copy flow, fallback behavior, dense world counts, responsive checks, and preview assets passed. Two scope items remain blocked/unverified in this environment.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [
+      {
+        "flow": "Community invite from conversation page canonicalization",
+        "issue": "Could not execute required /community/:id/post/:postId copy-canonical test because public feed has 0 posts (no available postId).",
+        "affected_selectors": [
+          "[data-testid=\"conversation-breadcrumb\"]",
+          "[data-testid=\"community-invite-fartcoin-copy\"]"
+        ]
+      },
+      {
+        "flow": "Native navigator.share success/AbortError/rejection branches via TEST-ONLY override",
+        "issue": "In this headless browser harness, navigator.share stays undefined and runtime prototype stubs are ignored, so success/AbortError/rejection branches could not be conclusively validated. Unsupported-share fallback path works.",
+        "affected_selectors": [
+          "[data-testid=\"community-invite-arc-share\"]",
+          "[data-testid=\"community-invite-arc-dialog\"]"
+        ]
+      }
+    ],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_live_world_regression.py",
+    "/app/backend/tests/test_community_feed_regression.py",
+    "/app/test_reports/pytest/pytest_results.xml",
+    "/app/test_reports/pytest/pytest_results_community.xml"
+  ],
+  "action_items": [
+    "Add/enable a deterministic TEST-ONLY hook for navigator.share branch simulation so success/AbortError/rejection can be reliably automated in headless QA.",
+    "Provide at least one public community post fixture for canonical copy test from /community/:id/post/:postId route.",
+    "Re-run final invite branch validation on a real mobile browser where native OS share sheet is available."
+  ],
+  "critical_code_review_comments": [
+    "CommunityInvite copy behavior is correct: canonical URL copied, copied state resets (~2.2s), and clipboard failure does not show false success.",
+    "Dense world instrumentation is consistent: data-scenery-buildings=7406 and data-token-buildings=5; token labels for fartcoin/arc/ban/jellyjelly/ansem are visible.",
+    "Home and product preview assets load from refreshed /previews files (world-scene.jpg and world-preview.jpg present and valid)."
+  ],
+  "updated_files": [
+    "/app/test_reports/iteration_3.json"
+  ],
+  "success_rate": {
+    "backend": "100%",
+    "frontend": "88%"
+  },
+  "seed_data_creation": "None",
+  "retest_needed": true,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Verified: no-login invite buttons for fartcoin/arc, clipboard success+reset, clipboard denial fallback message with readonly URL, unsupported share opens dialog, mobile 390/320 no horizontal overflow and no bottom-nav overlap, world dense counts 7406/5, label click and near-tower click route to token page, backend world/community regressions passed. Remaining: native share branch validation and conversation-page canonical copy once a post exists.",
+  "rca of the issue": "Unverified items were blocked by environment/state constraints rather than confirmed functional failures: (1) zero public posts prevented real /post/:postId conversation invite-copy validation; (2) headless preview browser reported navigator.share as undefined and ignored runtime stub attempts, so native-share success/AbortError/rejection branch outcomes could not be deterministically exercised here."
+}

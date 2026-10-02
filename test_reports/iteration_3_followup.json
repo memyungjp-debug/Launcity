@@ -1,0 +1,21 @@
+{
+  "scope": "Community invitation and denser world follow-up",
+  "main_agent_verified": {
+    "native_share_success_payload": "passed with test-only browser init script",
+    "native_share_abort_silent": "passed with test-only browser init script",
+    "native_share_rejection_fallback": "passed with test-only browser init script",
+    "real_post_thread_copies_community_root": "passed with real signed-wallet post and real Clipboard API",
+    "fresh_unauthenticated_recipient": "passed, opens correct community directly and reloads",
+    "test_data_cleanup": "temporary post, engagements/feed/activity, wallet session/profile/challenge removed",
+    "real_tokens": 5,
+    "supporting_buildings": 7406
+  },
+  "runtime_mocks": false,
+  "runtime_test_hooks_added": false,
+  "physical_mobile_os_share_sheet_exercised": false,
+  "remaining_product_defects": [],
+  "evidence": [
+    "/root/.emergent/automation_output/20261002_231321/console_20261002_231321.log",
+    "/root/.emergent/automation_output/20261002_231357/console_20261002_231357.log"
+  ]
+}

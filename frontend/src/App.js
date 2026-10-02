@@ -22,6 +22,7 @@ import './social.css';
 import './community-extras.css';
 import './spatial.css';
 import './entry.css';
+import './invitations.css';
 
 function LegacyRedirect(){
  const {pathname,search,hash}=useLocation();
