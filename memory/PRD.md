@@ -1,5 +1,42 @@
 # NEXUS — Living Solana World
 
+## Latest update — 2026-10-02, Home and About copy only
+
+### Original user request
+ONLY REPLACE THE EXISTING HOMEPAGE AND ABOUT TEXT.
+Do not change the UI, layout, navigation, world, buildings, components, functionality, or styling.
+Replace the current generic copy with natural, direct copy that explains NEXUS clearly.
+
+Main headline:
+NEXUS
+A launchpad where every token gets a place.
+
+Homepage supporting text:
+Launch a token through NEXUS and it becomes part of the World.
+
+About:
+NEXUS is a launchpad where tokens become places inside a shared world.
+Every token launched through NEXUS gets its own building. People can discover the building, explore the token, and join its community.
+As more tokens launch through NEXUS, the World grows with them.
+
+Problem:
+After launch, most tokens become another name on a chart or feed. NEXUS gives each token a place people can discover and return to.
+
+Keep all text short, natural, and human.
+Do not use generic AI marketing phrases such as “simple idea”, “revolutionizing”, “next generation”, “the future”, “seamless”, “immersive ecosystem”, or similar startup language and Repetitive "X, Y, and Z" structures.
+ONLY CHANGE THE TEXT. NOTHING ELSE.
+
+### Clarified choice and implementation
+- User approved replacing smaller existing Home/About marketing passages too, using exact supplied wording for headline/supporting/About/Problem and brief factual wording elsewhere.
+- Application edits are exclusively JSX text and display-copy string values in `Home.jsx`, `About.jsx`, and the Home-only `ProductPreviews.jsx`. No component restructuring, JSX attribute changes, routing changes, added elements, CSS, assets, World, backend, shared footer or functionality changes.
+- Exact About paragraphs are placed into existing text slots; no new sections added. Existing shared footer unchanged to avoid changing text on other routes.
+- AST comparison against pre-edit file copies passed after normalizing only JSX text and title/description display strings. Imports, logic, tags, attributes, asset paths and link destinations match exactly.
+- Diff against pre-request commit `e1df6c838bad95d6928775fa825bb8de544934b0` confirms only those three application files changed.
+- Browser assertions confirm exact supplied copy. Desktop1920x800 and mobile390/320 screenshots passed, with no horizontal overflow and main CTAs inside the unchanged hero.
+- No new features requested or added. No remaining task-specific defects. Existing unrelated backlog and integration limitations unchanged.
+
+---
+
 ## Latest feature addition — 2026-10-02, community invites and dense World
 
 ### Original request
